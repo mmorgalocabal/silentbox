@@ -38,10 +38,15 @@ const getYouTubeVideoURL = (url: string): string => {
   let videoURL = ''
   const videoId = getYoutubeVideoId(url)
   if (videoId) {
-    videoURL = `${location.protocol}//www.youtube.com/embed/${videoId}?rel=0`
-    if (props.item.autoplay) videoURL += '&autoplay=1'
+    const parsedUrl = new URL(url)
+    const params = parsedUrl.searchParams
+
+    if (props.item.autoplay) params.set('autoplay', 1)
     // check whether controls should disabled as default is enabled
-    if (!props.item.controls) videoURL += '&controls=0'
+    if (!props.item.controls) params.set('controls', 0)
+
+    parsedUrl.search = params.toString();
+    videoURL = parsedUrl.toString()
   }
   return videoURL
 }
@@ -55,8 +60,13 @@ const getVimeoVideoURL = (url: string): string => {
   let videoURL = ''
   const videoId = getVimeoVideoId(url)
   if (videoId) {
-    videoURL = `${location.protocol}//player.vimeo.com/video/${videoId}?rel=0`
-    if (props.item.autoplay) videoURL += '&autoplay=1'
+    const parsedUrl = new URL(url)
+    const params = parsedUrl.searchParams
+    
+    if (props.item.autoplay) params.set('autoplay', 1)
+
+    parsedUrl.search = params.toString();
+    videoURL = parsedUrl.toString()
   }
   return videoURL
 }

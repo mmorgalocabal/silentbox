@@ -11,6 +11,7 @@ export const isEmbedVideo = (itemSrc: string): boolean => {
   const supportedVideoServices: string[] = [
     'youtube.com',
     'youtu.be',
+    'youtube-nocookie.com',
     'vimeo.com',
     'twitch.tv'
   ]

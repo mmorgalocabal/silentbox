@@ -1,15 +1,15 @@
-import { defineComponent as z, inject as X, computed as C, reactive as V, onUpdated as A, openBlock as d, createElementBlock as u, createVNode as K, Transition as j, withCtx as H, withModifiers as v, createElementVNode as p, unref as f, toDisplayString as U, createCommentVNode as L, withKeys as S, renderSlot as G, Fragment as F, renderList as q, createApp as W } from "vue";
-const O = (o) => {
+import { defineComponent as z, inject as X, computed as $, reactive as V, onUpdated as A, openBlock as c, createElementBlock as d, createVNode as P, Transition as j, withCtx as H, withModifiers as y, createElementVNode as p, unref as w, toDisplayString as T, createCommentVNode as S, withKeys as U, renderSlot as G, Fragment as F, renderList as q, createApp as W } from "vue";
+const K = (o) => {
   const e = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/.exec(o);
   return e != null && e[7] !== void 0 ? e[7] : "";
-}, Y = (o) => {
+}, O = (o) => {
   const e = /(vimeo(pro)?\.com)\/(?:[^\d]+)?(\d+)\??(.*)?$/.exec(o);
   return e ? e[3] : "";
 }, J = (o) => {
   const e = /(?:player\.twitch\.tv\/\?channel=|twitch\.tv\/)([a-zA-Z0-9_]+)/.exec(o);
   return e ? e[1] : "";
 }, Z = (o) => {
-  if (M(o))
+  if (D(o))
     try {
       const s = new XMLHttpRequest();
       return s.open("GET", o, !1), s.send(null), JSON.parse(s.responseText);
@@ -17,9 +17,10 @@ const O = (o) => {
       return console.log(s), null;
     }
   throw new Error("Given string: url is not valid URL address.");
-}, D = (o) => [
+}, Y = (o) => [
   "youtube.com",
   "youtu.be",
+  "youtube-nocookie.com",
   "vimeo.com",
   "twitch.tv"
 ].some((e) => o.includes(e)), Q = (o) => [
@@ -33,17 +34,17 @@ const O = (o) => {
 ].some((e) => o.toLowerCase().includes(e)), ee = (o, s = "") => {
   var e;
   if (/(youtu\.?be)/.test(o)) {
-    const i = O(o);
-    return `${location.protocol}//img.youtube.com/vi/${i}/hqdefault.jpg`;
+    const l = K(o);
+    return `${location.protocol}//img.youtube.com/vi/${l}/hqdefault.jpg`;
   } else if (/(vimeo(pro)?\.com)/.test(o)) {
-    const i = Y(o), c = Z(`${location.protocol}//vimeo.com/api/v2/video/${i}.json`);
-    return c && c.length > 0 ? (e = c[0]) == null ? void 0 : e.thumbnail_medium : s;
+    const l = O(o), a = Z(`${location.protocol}//vimeo.com/api/v2/video/${l}.json`);
+    return a && a.length > 0 ? (e = a[0]) == null ? void 0 : e.thumbnail_medium : s;
   } else {
-    if (M(o))
+    if (D(o))
       return o;
     throw new Error("Given string: src is not valid URL address.");
   }
-}, M = (o) => new RegExp(
+}, D = (o) => new RegExp(
   "^(https?:\\/\\/)?((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|((\\d{1,3}\\.){3}\\d{1,3}))(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*(\\?[;&a-z\\d%_.~+=-]*)?(\\#[-a-z\\d_]*)?$",
   "i"
 ).test(o), te = /* @__PURE__ */ p("div", { id: "silentbox-overlay__background" }, null, -1), oe = ["onClick"], ne = { id: "silentbox-overlay__embed" }, ie = ["allow", "src"], le = {
@@ -57,7 +58,7 @@ const O = (o) => {
 ], pe = {
   key: 0,
   id: "silentbox-overlay__arrow-buttons"
-}, ve = ["onClick", "onKeyup"], be = ["onClick", "onKeyup"], N = /* @__PURE__ */ z({
+}, ve = ["onClick", "onKeyup"], be = ["onClick", "onKeyup"], M = /* @__PURE__ */ z({
   __name: "SilentBoxOverlay",
   props: {
     item: null,
@@ -73,106 +74,114 @@ const O = (o) => {
     "silentbox-overlay-hidden"
   ],
   setup(o, { emit: s }) {
-    const e = o, i = X("silent-box-options") || { downloadButtonLabel: "Download" }, c = C(() => typeof e.item.download == "string" ? e.item.download : e.item.src), n = (l) => {
+    const e = o, l = X("silent-box-options") || {
+      downloadButtonLabel: "Download"
+    }, a = $(() => typeof e.item.download == "string" ? e.item.download : e.item.src), i = (n) => {
       let r = "";
-      const a = O(l);
-      return a && (r = `${location.protocol}//www.youtube.com/embed/${a}?rel=0`, e.item.autoplay && (r += "&autoplay=1"), e.item.controls || (r += "&controls=0")), r;
-    }, $ = (l) => {
+      if (K(n)) {
+        const m = new URL(n), v = m.searchParams;
+        e.item.autoplay && v.set("autoplay", "1"), e.item.controls || v.set("controls", "0"), m.search = v.toString(), r = m.toString();
+      }
+      return r;
+    }, E = (n) => {
       let r = "";
-      const a = Y(l);
-      return a && (r = `${location.protocol}//player.vimeo.com/video/${a}?rel=0`, e.item.autoplay && (r += "&autoplay=1")), r;
-    }, w = (l) => {
+      if (O(n)) {
+        const m = new URL(n), v = m.searchParams;
+        e.item.autoplay && v.set("autoplay", "1"), m.search = v.toString(), r = m.toString();
+      }
+      return r;
+    }, I = (n) => {
       let r = "";
-      const a = J(l);
-      return a && (r = `${location.protocol}//player.twitch.tv/?channel=${a}&parent=${location.hostname}`, e.item.autoplay && (r += "&autoplay=true")), r;
-    }, g = (l) => /(youtu\.?be)/.test(l) ? n(l) : /(vimeo(pro)?\.com)/.test(l) ? $(l) : /(?:player\.|clips\.|www\.)?twitch\.tv/.test(l) ? w(l) : l, E = () => {
+      const b = J(n);
+      return b && (r = `${location.protocol}//player.twitch.tv/?channel=${b}&parent=${location.hostname}`, e.item.autoplay && (r += "&autoplay=true")), r;
+    }, k = (n) => /(youtu\.?be)/.test(n) ? i(n) : /(vimeo(pro)?\.com)/.test(n) ? E(n) : /(?:player\.|clips\.|www\.)?twitch\.tv/.test(n) ? I(n) : n, R = () => {
       document.body.classList.contains("silentbox-is-opened") || document.body.classList.add("silentbox-is-opened");
-    }, b = () => {
+    }, h = () => {
       document.body.classList.contains("silentbox-is-opened") && document.body.classList.remove("silentbox-is-opened");
-    }, y = V({
+    }, x = V({
       name: "silentbox-animation__swipe-left"
-    }), h = () => {
+    }), _ = () => {
       s("silentbox-internal-close-overlay");
-    }, x = () => {
-      y.name = "silentbox-animation__swipe-left", s("silentbox-internal-get-next-item");
-    }, _ = () => {
-      y.name = "silentbox-animation__swipe-right", s("silentbox-internal-get-prev-item");
+    }, f = () => {
+      x.name = "silentbox-animation__swipe-left", s("silentbox-internal-get-next-item");
+    }, g = () => {
+      x.name = "silentbox-animation__swipe-right", s("silentbox-internal-get-prev-item");
     }, t = V({
       posX: 0,
       posY: 0
-    }), I = (l) => {
-      const { clientX: r, clientY: a } = l.touches[0];
-      t.posX = r, t.posY = a;
-    }, m = (l) => {
-      const { clientX: r, clientY: a } = l.touches[0], { posX: R, posY: B } = t;
-      if (R === 0 || B === 0)
+    }), L = (n) => {
+      const { clientX: r, clientY: b } = n.touches[0];
+      t.posX = r, t.posY = b;
+    }, u = (n) => {
+      const { clientX: r, clientY: b } = n.touches[0], { posX: m, posY: v } = t;
+      if (m === 0 || v === 0)
         return;
-      const T = R - r, P = B - a;
-      Math.abs(T) > Math.abs(P) && (T > 0 ? x() : _()), t.posX = 0, t.posY = 0;
-    }, k = (l) => {
-      l.code === "Escape" && h(), l.code === "ArrowRight" && x(), l.code === "ArrowLeft" && _();
+      const B = m - r, N = v - b;
+      Math.abs(B) > Math.abs(N) && (B > 0 ? f() : g()), t.posX = 0, t.posY = 0;
+    }, C = (n) => {
+      n.code === "Escape" && _(), n.code === "ArrowRight" && f(), n.code === "ArrowLeft" && g();
     };
     return A(() => {
-      e.visible ? (window.addEventListener("keyup", k), E()) : (window.removeEventListener("keyup", k), b());
-    }), (l, r) => e.visible ? (d(), u("div", {
+      e.visible ? (window.addEventListener("keyup", C), R()) : (window.removeEventListener("keyup", C), h());
+    }), (n, r) => e.visible ? (c(), d("div", {
       key: 0,
       id: "silentbox-overlay",
       role: "overlay",
-      onTouchstart: I,
-      onTouchmove: m
+      onTouchstart: L,
+      onTouchmove: u
     }, [
       te,
-      K(j, {
-        name: y.name,
+      P(j, {
+        name: x.name,
         mode: "out-in"
       }, {
         default: H(() => [
-          (d(), u("div", {
+          (c(), d("div", {
             id: "silentbox-overlay__content",
-            onClick: v(h, ["stop"]),
+            onClick: y(_, ["stop"]),
             key: e.item.src
           }, [
             p("div", ne, [
               p("div", {
                 id: "silentbox-overlay__container",
-                onClick: r[0] || (r[0] = v(() => {
+                onClick: r[0] || (r[0] = y(() => {
                 }, ["stop"]))
               }, [
-                f(D)(e.item.src) ? (d(), u("iframe", {
+                w(Y)(e.item.src) ? (c(), d("iframe", {
                   key: 0,
                   allow: `accelerometer; ${!!e.item.autoplay && "autoplay;"} encrypted-media; gyroscope; picture-in-picture`,
-                  src: g(e.item.src),
+                  src: k(e.item.src),
                   frameborder: "0",
                   width: "100%",
                   height: "100%",
                   allowfullscreen: ""
-                }, null, 8, ie)) : f(Q)(e.item.src) ? (d(), u("div", le, [
+                }, null, 8, ie)) : w(Q)(e.item.src) ? (c(), d("div", le, [
                   p("video", {
                     src: e.item.src,
                     autoplay: !!e.item.autoplay,
                     controls: e.item.controls,
                     class: "silentbox-video__embed"
                   }, null, 8, se)
-                ])) : (d(), u("img", {
+                ])) : (c(), d("img", {
                   key: 2,
                   srcset: e.item.srcSet ? e.item.srcSet.join(",") : e.item.src,
                   src: e.item.src,
                   alt: e.item.alt
                 }, null, 8, re))
               ]),
-              e.item.description ? (d(), u("p", {
+              e.item.description ? (c(), d("p", {
                 key: 0,
                 id: "silentbox-overlay__description",
-                onClick: r[1] || (r[1] = v(() => {
+                onClick: r[1] || (r[1] = y(() => {
                 }, ["prevent", "stop"]))
-              }, U(e.item.description), 1)) : L("", !0),
-              e.item.download ? (d(), u("div", ae, [
+              }, T(e.item.description), 1)) : S("", !0),
+              e.item.download ? (c(), d("div", ae, [
                 p("a", {
-                  href: f(c),
+                  href: w(a),
                   class: "download",
                   download: ""
-                }, U(f(i).downloadButtonLabel), 9, ce)
-              ])) : L("", !0)
+                }, T(w(l).downloadButtonLabel), 9, ce)
+              ])) : S("", !0)
             ])
           ], 8, oe))
         ]),
@@ -182,26 +191,26 @@ const O = (o) => {
         id: "silentbox-overlay__close-button",
         role: "button",
         tabindex: "3",
-        onClick: v(h, ["prevent"]),
-        onKeyup: S(h, ["enter"])
+        onClick: y(_, ["prevent"]),
+        onKeyup: U(_, ["enter"])
       }, me, 40, de),
-      e.totalItems > 1 ? (d(), u("div", pe, [
+      e.totalItems > 1 ? (c(), d("div", pe, [
         p("button", {
           class: "arrow arrow-previous",
           role: "button",
           tabindex: "2",
-          onClick: v(_, ["stop"]),
-          onKeyup: S(_, ["enter"])
+          onClick: y(g, ["stop"]),
+          onKeyup: U(g, ["enter"])
         }, null, 40, ve),
         p("button", {
           class: "arrow arrow-next",
           role: "button",
           tabindex: "1",
-          onClick: v(x, ["stop"]),
-          onKeyup: S(x, ["enter"])
+          onClick: y(f, ["stop"]),
+          onKeyup: U(f, ["enter"])
         }, null, 40, be)
-      ])) : L("", !0)
-    ], 32)) : L("", !0);
+      ])) : S("", !0)
+    ], 32)) : S("", !0);
   }
 });
 const ye = ["href", "onClick"], he = ["loading", "src", "alt", "width", "height"], xe = /* @__PURE__ */ z({
@@ -220,7 +229,7 @@ const ye = ["href", "onClick"], he = ["loading", "src", "alt", "width", "height"
     "silentbox-overlay-prev-item-displayed"
   ],
   setup(o, { expose: s, emit: e }) {
-    const i = o, c = C(() => i.gallery ? i.gallery.length : 1), n = V({
+    const l = o, a = $(() => l.gallery ? l.gallery.length : 1), i = V({
       item: {
         src: "",
         alt: "",
@@ -234,49 +243,49 @@ const ye = ["href", "onClick"], he = ["loading", "src", "alt", "width", "height"
       },
       visible: !1,
       currentItem: 0,
-      totalItems: c
-    }), $ = (t) => D(t) ? ee(t, i.fallbackThumbnail) : t, w = (t) => ({
-      ...n.item,
+      totalItems: a
+    }), E = (t) => Y(t) ? ee(t, l.fallbackThumbnail) : t, I = (t) => ({
+      ...i.item,
       download: !1,
       ...t,
-      thumbnail: t.thumbnail ? t.thumbnail : $(t.src)
-    }), g = () => i.gallery && i.gallery.length > 0 ? i.gallery.map(w) : i.image ? [w(i.image)] : [], E = C(() => i.previewCount && i.previewCount > 0 && i.gallery ? i.gallery.slice(0, i.previewCount).map(w) : g()), b = C(() => g()), y = (t, I = 0) => {
-      n.visible = !0, n.item = t, n.currentItem = I, e("silentbox-overlay-opened", t);
-    }, h = () => {
-      n.visible = !1, e("silentbox-overlay-hidden", n.item);
-    }, x = () => {
-      let t = n.currentItem + 1;
-      t = t <= b.value.length - 1 ? t : 0, n.item = b.value[t], n.currentItem = t, e("silentbox-overlay-next-item-displayed", n.item);
+      thumbnail: t.thumbnail ? t.thumbnail : E(t.src)
+    }), k = () => l.gallery && l.gallery.length > 0 ? l.gallery.map(I) : l.image ? [I(l.image)] : [], R = $(() => l.previewCount && l.previewCount > 0 && l.gallery ? l.gallery.slice(0, l.previewCount).map(I) : k()), h = $(() => k()), x = (t, L = 0) => {
+      i.visible = !0, i.item = t, i.currentItem = L, e("silentbox-overlay-opened", t);
     }, _ = () => {
-      let t = n.currentItem - 1;
-      t = t >= 0 ? t : b.value.length - 1, n.item = b.value[t], n.currentItem = t, e("silentbox-overlay-prev-item-displayed", n.item);
+      i.visible = !1, e("silentbox-overlay-hidden", i.item);
+    }, f = () => {
+      let t = i.currentItem + 1;
+      t = t <= h.value.length - 1 ? t : 0, i.item = h.value[t], i.currentItem = t, e("silentbox-overlay-next-item-displayed", i.item);
+    }, g = () => {
+      let t = i.currentItem - 1;
+      t = t >= 0 ? t : h.value.length - 1, i.item = h.value[t], i.currentItem = t, e("silentbox-overlay-prev-item-displayed", i.item);
     };
-    return s({ openOverlay: y }), (t, I) => (d(), u("div", null, [
+    return s({ openOverlay: x }), (t, L) => (c(), d("div", null, [
       G(t.$slots, "default"),
-      (d(!0), u(F, null, q(f(E), (m, k) => (d(), u("a", {
-        key: m.src,
-        href: m.src,
-        onClick: v((l) => y(m, k), ["prevent"]),
+      (c(!0), d(F, null, q(w(R), (u, C) => (c(), d("a", {
+        key: u.src,
+        href: u.src,
+        onClick: y((n) => x(u, C), ["prevent"]),
         class: "silentbox-item"
       }, [
-        G(t.$slots, "silentbox-item", { silentboxItem: m }, () => [
+        G(t.$slots, "silentbox-item", { silentboxItem: u }, () => [
           p("img", {
             loading: o.lazyLoading ? "lazy" : "eager",
-            src: m.thumbnail,
-            alt: m.alt,
-            width: m.thumbnailWidth,
-            height: m.thumbnailHeight
+            src: u.thumbnail,
+            alt: u.alt,
+            width: u.thumbnailWidth,
+            height: u.thumbnailHeight
           }, null, 8, he)
         ])
       ], 8, ye))), 128)),
-      K(N, {
-        visible: n.visible,
-        item: n.item,
-        "current-item": n.currentItem,
-        "total-items": f(c),
-        onSilentboxInternalCloseOverlay: h,
-        onSilentboxInternalGetNextItem: x,
-        onSilentboxInternalGetPrevItem: _
+      P(M, {
+        visible: i.visible,
+        item: i.item,
+        "current-item": i.currentItem,
+        "total-items": w(a),
+        onSilentboxInternalCloseOverlay: _,
+        onSilentboxInternalGetNextItem: f,
+        onSilentboxInternalGetPrevItem: g
       }, null, 8, ["visible", "item", "current-item", "total-items"])
     ]));
   }
@@ -288,18 +297,18 @@ const fe = {
       ...s
     }), o.config.globalProperties.$silentbox = {
       open: (e) => {
-        const i = document.createElement("div");
-        i.setAttribute("id", "silentbox--false-root");
-        const c = W(N, {
+        const l = document.createElement("div");
+        l.setAttribute("id", "silentbox--false-root");
+        const a = W(M, {
           item: e,
           currentItem: 1,
           totalItems: 1,
           visible: !0,
           onSilentboxInternalCloseOverlay: () => {
-            n.$emit("silentbox-overlay-hidden", e), c.unmount(), i.remove();
+            i.$emit("silentbox-overlay-hidden", e), a.unmount(), l.remove();
           }
-        }), n = c.mount(i);
-        n.$emit("silentbox-overlay-opened", e), n.$forceUpdate(), document.body.appendChild(n.$el);
+        }), i = a.mount(l);
+        i.$emit("silentbox-overlay-opened", e), i.$forceUpdate(), document.body.appendChild(i.$el);
       }
     };
   }

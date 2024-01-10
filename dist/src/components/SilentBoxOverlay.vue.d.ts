@@ -1,4 +1,4 @@
-import type { ItemProps, SilentBoxOptions } from '../types';
+import type { ItemProps, SilentBoxOptions } from "../types";
 export interface OverlayProps {
     item: ItemProps;
     visible: boolean;
@@ -46,8 +46,8 @@ declare const _sfc_main: import("vue").DefineComponent<{
     touchStart: (event: TouchEvent) => void;
     handleTouchMove: (event: TouchEvent) => void;
     handleKeyInteraction: (event: KeyboardEvent) => void;
-    readonly isEmbedVideo: (itemSrc: string) => boolean;
-    readonly isLocalVideo: (itemSrc: string) => boolean;
+    isEmbedVideo: (itemSrc: string) => boolean;
+    isLocalVideo: (itemSrc: string) => boolean;
 }, unknown, {}, {}, import("vue").ComponentOptionsMixin, import("vue").ComponentOptionsMixin, ("silentbox-overlay-opened" | "silentbox-overlay-hidden" | "silentbox-internal-close-overlay" | "silentbox-internal-get-next-item" | "silentbox-internal-get-prev-item")[], "silentbox-overlay-opened" | "silentbox-overlay-hidden" | "silentbox-internal-close-overlay" | "silentbox-internal-get-next-item" | "silentbox-internal-get-prev-item", import("vue").VNodeProps & import("vue").AllowedComponentProps & import("vue").ComponentCustomProps, Readonly<import("vue").ExtractPropTypes<{
     item: {
         type: any;
